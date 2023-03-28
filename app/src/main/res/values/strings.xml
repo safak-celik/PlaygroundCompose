@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PlaygroundCompose</string>
+    <string name="title_activity_state">StateActivity</string>
+    <string name="title_activity_snack_bar">SnackBarActivity</string>
+    <string name="increase_button_text">Increase</string>
+    <string name="decrease_button_text">Decrease</string>
+    <string name="save_button_text">Save</string>
+    <string name="hint">Enter Textx</string>
+    <string name="title_activity_shopping_card">ShoppingCardActivity</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_effect_handlers">EffectHandlersActivity</string>
+    <string name="title_activity_animation">AnimationActivity</string>
+    <string name="title_activity_navigation">Navigation</string>
+    <string name="title_activity_image_screen">ImageScreen</string>
+    <string name="title_activity_main">MainActivity</string>
+</resources>
