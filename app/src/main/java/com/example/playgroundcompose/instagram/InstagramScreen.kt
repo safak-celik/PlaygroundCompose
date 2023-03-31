@@ -5,24 +5,34 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.layout.Arrangement.SpaceAround
-import androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ContentScale.Companion.Crop
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -38,14 +48,70 @@ import com.ramcosta.composedestinations.annotation.Destination
 @Destination
 @Composable
 fun InstagramScreen() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(12.dp))
-        TopBar(name = "safakc_44", modifier = Modifier.padding(10.dp))
-        Spacer(modifier = Modifier.height(4.dp))
-        Profile()
-        Spacer(modifier = Modifier.height(25.dp))
-        ButtonSection()
-        Spacer(modifier = Modifier.height(25.dp))
+    var selectedTabIndex by remember { mutableStateOf(0) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+    ) {
+        TopBar(name = "safakc_44", Modifier.padding(top = 10.dp))
+        Profile(Modifier.padding(top = 10.dp))
+        ButtonSection(Modifier.padding(top = 10.dp))
+        StoryHighLightSection(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
+            highLights = listOf(
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.example_image), text = "Stories"
+                ),
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.example_image), text = "Stories"
+                ),
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.example_image), text = "Stories"
+                ),
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.example_image), text = "Stories"
+                )
+            )
+        )
+        PostTabView(Modifier.padding(top = 10.dp),
+            imageWithText = listOf(
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.ic_grid),
+                    text = "Posts"
+                ),
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.ic_reels),
+                    text = "Reels"
+                ),
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.ic_igtv),
+                    text = "IGTV"
+                ),
+                ImageWithtext(
+                    image = painterResource(id = R.drawable.profile),
+                    text = "Profile"
+                )
+            )
+        ) {
+            selectedTabIndex = it
+        }
+        when (selectedTabIndex) {
+            0 -> PostSection(
+                posts = listOf(
+                    painterResource(id = R.drawable.example_image),
+                    painterResource(id = R.drawable.example_image),
+                    painterResource(id = R.drawable.example_image),
+                    painterResource(id = R.drawable.example_image),
+                    painterResource(id = R.drawable.example_image),
+                    painterResource(id = R.drawable.example_image)
+                ),
+                Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -57,7 +123,6 @@ fun TopBar(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = CenterVertically,
         horizontalArrangement = SpaceAround
     ) {
         Icon(
@@ -94,8 +159,7 @@ fun Profile(
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+                .fillMaxWidth(),
             verticalAlignment = CenterVertically,
         ) {
             RoundImage(
@@ -180,7 +244,7 @@ fun ProfileDescription(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(top = 10.dp, start = 12.dp)
     ) {
         Text(
             text = displayName,
@@ -235,7 +299,7 @@ fun ButtonSection(
     val minWith = 95.dp
     val height = 35.dp
 
-    Row(horizontalArrangement = SpaceEvenly, modifier = modifier.fillMaxWidth()) {
+    Row(horizontalArrangement = SpaceAround, modifier = modifier.fillMaxWidth()) {
         ActionButton(
             text = "Following",
             icon = Icons.Default.KeyboardArrowDown,
@@ -267,15 +331,15 @@ fun ActionButton(
     icon: ImageVector? = null
 ) {
     Row(
+        horizontalArrangement = Center,
+        verticalAlignment = CenterVertically,
         modifier = modifier
             .border(
                 width = 1.dp,
                 color = LightGray,
                 shape = RoundedCornerShape(5.dp)
             )
-            .padding(8.dp),
-        horizontalArrangement = Center,
-        verticalAlignment = CenterVertically
+            .padding(6.dp),
     ) {
         if (text != null) {
             Text(text = text, fontWeight = SemiBold, fontSize = 14.sp)
@@ -287,6 +351,81 @@ fun ActionButton(
 }
 
 @Composable
-fun HighLightSection() {
+fun StoryHighLightSection(
+    modifier: Modifier = Modifier, highLights: List<ImageWithtext>
+) {
+    LazyRow(modifier = modifier.fillMaxWidth(), horizontalArrangement = SpaceAround) {
+        items(highLights.size) {
+            Column(
+                modifier = modifier.padding(end = 15.dp),
+                horizontalAlignment = CenterHorizontally,
+                verticalArrangement = Center
+            ) {
+                RoundImage(
+                    modifier = Modifier.size(70.dp),
+                    image = highLights[it].image
+                )
+                Text(text = highLights[it].text, overflow = Ellipsis)
+            }
+        }
+    }
+}
 
+@Composable
+fun PostTabView(
+    modifier: Modifier = Modifier,
+    imageWithText: List<ImageWithtext>,
+    onTabSelected: (selectedIndex: Int) -> Unit
+) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val inactiveColor = Color(0xF7777777)
+
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        contentColor = Black,
+        backgroundColor = Transparent,
+        modifier = modifier
+    ) {
+        imageWithText.forEachIndexed { index, item ->
+            Tab(
+                selected = selectedTabIndex == index,
+                selectedContentColor = Black,
+                unselectedContentColor = inactiveColor,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabSelected(index)
+                }) {
+                Icon(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(20.dp),
+                    painter = item.image,
+                    contentDescription = item.text,
+                    tint = if (selectedTabIndex == index) Black else inactiveColor
+                )
+            }
+        }
+    }
+}
+
+/**
+ * modifier.scale(1.01f) = um die Border an der rechten und linke seite aus dem Screen zu schieben
+ */
+@Composable
+fun PostSection(posts: List<Painter>, modifier: Modifier = Modifier) {
+    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = modifier.scale(1.01f)) {
+        items(posts.size) {
+            Image(
+                painter = posts[it],
+                contentDescription = null,
+                contentScale = Crop,
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .border(
+                        width = 1.dp,
+                        color = White
+                    )
+            )
+        }
+    }
 }
