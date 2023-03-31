@@ -30,9 +30,7 @@ import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -63,35 +61,35 @@ fun InstagramScreen() {
                 .fillMaxWidth()
                 .padding(top = 10.dp),
             highLights = listOf(
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.example_image), text = "Stories"
                 ),
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.example_image), text = "Stories"
                 ),
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.example_image), text = "Stories"
                 ),
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.example_image), text = "Stories"
                 )
             )
         )
         PostTabView(Modifier.padding(top = 10.dp),
             imageWithText = listOf(
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.ic_grid),
                     text = "Posts"
                 ),
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.ic_reels),
                     text = "Reels"
                 ),
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.ic_igtv),
                     text = "IGTV"
                 ),
-                ImageWithtext(
+                ImageWithText(
                     image = painterResource(id = R.drawable.profile),
                     text = "Profile"
                 )
@@ -352,7 +350,7 @@ fun ActionButton(
 
 @Composable
 fun StoryHighLightSection(
-    modifier: Modifier = Modifier, highLights: List<ImageWithtext>
+    modifier: Modifier = Modifier, highLights: List<ImageWithText>
 ) {
     LazyRow(modifier = modifier.fillMaxWidth(), horizontalArrangement = SpaceAround) {
         items(highLights.size) {
@@ -374,7 +372,7 @@ fun StoryHighLightSection(
 @Composable
 fun PostTabView(
     modifier: Modifier = Modifier,
-    imageWithText: List<ImageWithtext>,
+    imageWithText: List<ImageWithText>,
     onTabSelected: (selectedIndex: Int) -> Unit
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
